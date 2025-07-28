@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Skin AI - Enhanced Glassmorphism</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'dream-blue': '#00bfff', 'dream-pink': '#ff1493' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: rgba(0, 191, 255, 0.4);
+            box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1);
+        }
+
+        .bg-main {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .bg-main::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 15% 85%, rgba(0, 191, 255, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 85% 15%, rgba(255, 20, 147, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 191, 255, 0.02) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .floating {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .brand-btn {
+            background: linear-gradient(135deg, #00bfff 0%, #ff1493 100%);
+            box-shadow: 0 8px 24px rgba(0, 191, 255, 0.2);
+        }
+
+        .brand-btn:hover {
+            box-shadow: 0 12px 32px rgba(0, 191, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .chat-user {
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.08) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 1px solid rgba(0, 191, 255, 0.2);
+        }
+
+        .chat-ai {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .quick-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            transition: all 0.3s ease;
+        }
+
+        .quick-btn:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(0, 191, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (max-width: 768px) {
+            .floating {
+                opacity: 0.6;
+            }
+
+            .chat-height {
+                height: calc(100vh - 200px) !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-main relative">
+    <!-- Subtle Background Elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="floating floating-1"
+            style="width: 120px; height: 120px; top: 15%; left: 8%; background: linear-gradient(135deg, rgba(0, 191, 255, 0.15) 0%, rgba(255, 255, 255, 0.8) 100%);">
+        </div>
+        <div class="floating floating-2"
+            style="width: 160px; height: 160px; top: 65%; right: 12%; background: linear-gradient(135deg, rgba(255, 20, 147, 0.15) 0%, rgba(255, 255, 255, 0.8) 100%);">
+        </div>
+        <div class="floating floating-3"
+            style="width: 90px; height: 90px; bottom: 25%; left: 18%; background: linear-gradient(135deg, rgba(0, 191, 255, 0.18) 0%, rgba(255, 255, 255, 0.85) 100%);">
+        </div>
+        <div class="floating floating-4"
+            style="width: 140px; height: 140px; top: 8%; right: 25%; background: linear-gradient(135deg, rgba(255, 20, 147, 0.18) 0%, rgba(255, 255, 255, 0.85) 100%);">
+        </div>
+        <div class="floating floating-5"
+            style="width: 110px; height: 110px; top: 45%; left: 5%; background: linear-gradient(135deg, rgba(0, 191, 255, 0.12) 0%, rgba(255, 255, 255, 0.9) 100%);">
+        </div>
+        <div class="floating floating-6"
+            style="width: 75px; height: 75px; bottom: 15%; right: 8%; background: linear-gradient(135deg, rgba(255, 20, 147, 0.16) 0%, rgba(255, 255, 255, 0.9) 100%);">
+        </div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto p-3 sm:p-6 min-h-screen">
+        <!-- Header -->
+        <div class="glass rounded-3xl p-4 sm:p-6 mb-4 sm:mb-8 hover-lift" id="header">
+            <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <div class="relative">
+                        <div
+                            class="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 overflow-hidden">
+                            <img src="https://www.dreamskinnepal.com/Assets/Product/Media/Images/Logo/Dream%20skin%20nepal.png"
+                                alt="Dream Skin Nepal" class="w-full h-full object-contain">
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 brand-btn rounded-full pulse-ring">
+                        </div>
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Dream Skin AI</h1>
+                        <p class="text-sm sm:text-base text-gray-600">Your Personal Skincare Consultant</p>
+                    </div>
+                </div>
+                <div class="glass rounded-2xl px-3 py-2 sm:px-4 sm:py-2">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 sm:w-3 sm:h-3 bg-dream-blue rounded-full pulse-dot"></div>
+                        <span class="text-gray-700 text-xs sm:text-sm font-medium">AI Active</span>
+                        <i class="fas fa-signal text-dream-blue text-xs sm:text-sm ml-1 sm:ml-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
+            <!-- Main Chat -->
+            <div class="lg:col-span-3">
+                <div class="glass rounded-3xl h-[450px] sm:h-[500px] chat-height flex flex-col overflow-hidden hover-lift"
+                    id="mainChat">
+                    <div class="p-4 sm:p-6 border-b border-gray-200 border-opacity-50">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2 sm:space-x-3">
+                                <i class="fas fa-comments text-gray-700 text-lg sm:text-xl"></i>
+                                <h3 class="text-lg sm:text-xl font-semibold text-gray-800">AI Consultation</h3>
+                            </div>
+                            <div class="flex items-center space-x-1 sm:space-x-2">
+                                <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-dream-blue rounded-full ping-dot"></div>
+                                <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-dream-pink rounded-full ping-dot"></div>
+                                <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-dream-blue rounded-full ping-dot"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="chatArea"
+                        class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4 bg-gradient-to-b from-white/20 to-transparent">
+                        <div class="flex items-start space-x-2 sm:space-x-3" id="initialMessage">
+                            <div
+                                class="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 flex-shrink-0">
+                                <i class="fas fa-robot text-dream-pink text-sm sm:text-base"></i>
+                            </div>
+                            <div class="chat-ai rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
+                                <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">Hello! I'm your Dream Skin
+                                    AI consultant. Ready to transform your skincare routine? Tell me about your skin
+                                    concerns!</p>
+                                <div class="flex items-center space-x-1 mt-2">
+                                    <i class="fas fa-clock text-gray-500 text-xs"></i>
+                                    <span class="text-xs text-gray-500">Just now</span>
+                                    <i class="fas fa-check-double text-dream-blue text-xs ml-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 sm:p-6 border-t border-gray-200 border-opacity-50 bg-white/30">
+                        <div class="flex space-x-2 sm:space-x-3">
+                            <input type="text" id="messageInput" placeholder="Ask about skincare, products, routines..."
+                                class="flex-1 glass-input rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-dream-blue focus:ring-opacity-50 transition-all text-sm sm:text-base"
+                                autocomplete="off">
+                            <button id="sendBtn"
+                                class="brand-btn text-white rounded-2xl px-4 py-3 sm:px-6 sm:py-4 flex-shrink-0 transition-all duration-300">
+                                <i class="fas fa-paper-plane text-sm sm:text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-4 sm:space-y-6">
+                <div class="glass rounded-3xl p-4 sm:p-6" id="quickActions">
+                    <h3 class="text-gray-800 font-semibold mb-3 sm:mb-4 flex items-center text-sm sm:text-base">
+                        <i class="fas fa-bolt mr-2 text-dream-blue text-sm sm:text-base"></i>
+                        Quick Start
+                    </h3>
+
+
+                    <div class="space-y-2 sm:space-y-3" id="quickBtns">
+                        <!-- Quick buttons will be injected by JS -->
+                    </div>
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            // Store quick button data in JS
+            const quickBtnsData = [
+                {
+                    text: "Acne Solutions",
+                    icon: "fire",
+                    color: "dream-pink",
+                    desc: "Clear skin strategy"
+                },
+                {
+                    text: "Anti-Aging",
+                    icon: "gem",
+                    color: "dream-blue",
+                    desc: "Youthful glow routine"
+                },
+                {
+                    text: "Sensitive Care",
+                    icon: "leaf",
+                    color: "dream-pink",
+                    desc: "Gentle protection"
+                },
+                {
+                    text: "Hydration Boost",
+                    icon: "tint",
+                    color: "dream-blue",
+                    desc: "Moisture therapy"
+                }
+            ];
+
+            // Render quick buttons
+            function RenderQuickButtons() {
+                const html = quickBtnsData.map(item => `
+                                <button class="quick-btn w-full text-left p-3 sm:p-4 rounded-2xl" data-text="${item.text}">
+                                    <div class="flex items-center space-x-2 sm:space-x-3">
+                                        <div class="w-6 h-6 sm:w-8 sm:h-8 bg-${item.color} bg-opacity-15 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-${item.icon} text-${item.color} text-xs sm:text-sm"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="text-gray-800 font-medium text-xs sm:text-sm">${item.text}</div>
+                                            <div class="text-gray-600 text-xs">${item.desc}</div>
+                                        </div>
+                                    </div>
+                                </button>
+                            `).join('');
+                $('#quickBtns').html(html);
+            }
+
+
+            RenderQuickButtons();
+            let isTyping = false, messageCounter = 0;
+
+            // Animations
+            $('.floating').each((i, el) => {
+                gsap.to(el, {
+                    y: -25 + (i * 4), rotation: i % 2 ? -360 : 360, duration: 10 + i * 1.5,
+                    repeat: -1, yoyo: true, ease: "power2.inOut", delay: i * 1.2
+                });
+            });
+
+            gsap.to(".pulse-ring", { scale: 1.3, opacity: 0, duration: 2.5, repeat: -1, ease: "power2.out" });
+            gsap.to(".pulse-dot", { scale: 1.4, opacity: 0.6, duration: 1.2, repeat: -1, yoyo: true, ease: "power2.inOut" });
+
+            $('.ping-dot').each((i, el) => {
+                gsap.to(el, { scale: 1.5, opacity: 0.2, duration: 2, repeat: -1, ease: "power2.out", delay: i * 0.7 });
+            });
+
+            ['#header', '#mainChat', '#quickActions'].forEach((el, i) => {
+                gsap.fromTo(el, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: i * 0.3 });
+            });
+
+            gsap.fromTo("#initialMessage", { scale: 0.9, y: 30, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.7)", delay: 1.2 });
+
+            $('.hover-lift, .quick-btn').hover(
+                function () { gsap.to(this, { y: -3, scale: 1.008, boxShadow: "0 20px 40px rgba(0, 0, 0, 0.08)", duration: 0.4, ease: "power2.out" }); },
+                function () { gsap.to(this, { y: 0, scale: 1, boxShadow: "0 12px 40px rgba(0, 0, 0, 0.05)", duration: 0.4, ease: "power2.out" }); }
+            );
+
+            // Events
+            $('#sendBtn').click(sendMessage);
+            $('#messageInput').on('keydown keypress', function (e) {
+                if (e.which === 13) { e.preventDefault(); sendMessage(); }
+            }).on('focus', function () { $(this).attr('autocomplete', 'off'); });
+
+            $('.quick-btn').click(function () {
+                $('#messageInput').val(`Help me with ${$(this).data('text').toLowerCase()}`).focus();
+                sendMessage();
+            });
+
+            function sendMessage() {
+                const msg = $('#messageInput').val().trim();
+                if (!msg || isTyping) return;
+
+                messageCounter++;
+                const id = `message-${messageCounter}`;
+
+                // User message
+                const userHtml = `
+                    <div class="flex items-start space-x-2 sm:space-x-3 justify-end ${id}-user">
+                        <div class="chat-user rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
+                            <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">${msg}</p>
+                            <div class="flex items-center justify-end space-x-1 mt-2">
+                                <span class="text-xs text-gray-500">You</span>
+                                <i class="fas fa-check-double text-dream-blue text-xs ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 flex-shrink-0">
+                            <i class="fas fa-user text-dream-blue text-sm sm:text-base"></i>
+                        </div>
+                    </div>
+                `;
+
+                $('#chatArea').append(userHtml);
+                gsap.fromTo(`.${id}-user`, { scale: 0.9, y: 20, opacity: 0, x: 30 }, { scale: 1, y: 0, opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.7)" });
+
+                $('#messageInput').val('').focus();
+                isTyping = true;
+
+                setTimeout(() => {
+                    // Typing indicator
+                    $('#chatArea').append(`
+                        <div class="flex items-start space-x-2 sm:space-x-3" id="typingIndicator">
+                            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 flex-shrink-0">
+                                <i class="fas fa-robot text-dream-pink text-sm sm:text-base"></i>
+                            </div>
+                            <div class="chat-ai rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
+                                <div class="flex items-center space-x-1">
+                                    <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-500 rounded-full typing-dot-1"></div>
+                                    <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-500 rounded-full typing-dot-2"></div>
+                                    <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-500 rounded-full typing-dot-3"></div>
+                                    <span class="text-gray-600 text-xs sm:text-sm ml-2">AI is thinking...</span>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+
+                    [1, 2, 3].forEach(i => {
+                        gsap.to(`.typing-dot-${i}`, { scale: 1.4, opacity: 1, duration: 0.7, repeat: -1, yoyo: true, ease: "power2.inOut", delay: (i - 1) * 0.25 });
+                    });
+
+                    $('#chatArea').scrollTop($('#chatArea')[0].scrollHeight);
+                }, 600);
+
+                setTimeout(() => {
+                    $('#typingIndicator').remove();
+
+                    const responses = [
+                        "Perfect! I'll analyze your needs and create a personalized skincare plan. Let me provide you with expert recommendations tailored just for you! ✨",
+                        "Great question! Based on your concern, I recommend starting with a gentle cleanser and building your routine gradually. Let me guide you through it! 🌟",
+                        "Excellent choice! I'll help you create the perfect skincare routine. Your skin deserves the best care, and I'm here to help you achieve that! 💎"
+                    ];
+
+                    const aiHtml = `
+                        <div class="flex items-start space-x-2 sm:space-x-3 ${id}-ai">
+                            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 flex-shrink-0">
+                                <i class="fas fa-robot text-dream-pink text-sm sm:text-base"></i>
+                            </div>
+                            <div class="chat-ai rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
+                                <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">${responses[Math.floor(Math.random() * responses.length)]}</p>
+                                <div class="flex items-center space-x-1 mt-2">
+                                    <i class="fas fa-magic text-dream-pink text-xs"></i>
+                                    <span class="text-xs text-gray-500">AI Assistant</span>
+                                    <i class="fas fa-check-double text-dream-blue text-xs ml-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    $('#chatArea').append(aiHtml);
+                    gsap.fromTo(`.${id}-ai`, { scale: 0.9, y: 20, opacity: 0, x: -30 }, { scale: 1, y: 0, opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.7)" });
+
+                    $('#chatArea').scrollTop($('#chatArea')[0].scrollHeight);
+                    isTyping = false;
+                }, 3000);
+            }
+
+            // Activity updates
+            setInterval(() => {
+                const activities = ["124 online", "131 online", "118 online", "127 online", "142 online"];
+                gsap.to('.users-online', {
+                    opacity: 0, duration: 0.3,
+                    onComplete: function () {
+                        $('.users-online').text(activities[Math.floor(Math.random() * activities.length)]);
+                        gsap.to('.users-online', { opacity: 1, duration: 0.3 });
+                    }
+                });
+            }, 6000);
+        });
+    </script>
+</body>
+
+</html>
