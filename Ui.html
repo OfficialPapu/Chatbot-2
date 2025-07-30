@@ -235,7 +235,7 @@
             </div>
         </div>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
         $(document).ready(function () {
 
@@ -329,14 +329,15 @@
             function sendMessage() {
                 const msg = $('#messageInput').val().trim();
                 if (!msg || isTyping) return;
-
+                isTyping = true;
+                $('#sendBtn').css({ pointerEvents: 'none', opacity: 0.5 });
                 messageCounter++;
                 const id = `message-${messageCounter}`;
 
                 // User message
                 const userHtml = `
                     <div class="flex items-start space-x-2 sm:space-x-3 justify-end ${id}-user">
-                        <div class="chat-user rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
+                        <div class="chat-user rounded-2xl p-3 sm:p-4 w-1/4">
                             <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">${msg}</p>
                             <div class="flex items-center justify-end space-x-1 mt-2">
                                 <span class="text-xs text-gray-500">You</span>
@@ -353,7 +354,6 @@
                 gsap.fromTo(`.${id}-user`, { scale: 0.9, y: 20, opacity: 0, x: 30 }, { scale: 1, y: 0, opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.7)" });
 
                 $('#messageInput').val('').focus();
-                isTyping = true;
 
                 setTimeout(() => {
                     // Typing indicator
@@ -380,22 +380,22 @@
                     $('#chatArea').scrollTop($('#chatArea')[0].scrollHeight);
                 }, 600);
 
-                setTimeout(() => {
-                    $('#typingIndicator').remove();
-
-                    const responses = [
-                        "Perfect! I'll analyze your needs and create a personalized skincare plan. Let me provide you with expert recommendations tailored just for you! ✨",
-                        "Great question! Based on your concern, I recommend starting with a gentle cleanser and building your routine gradually. Let me guide you through it! 🌟",
-                        "Excellent choice! I'll help you create the perfect skincare routine. Your skin deserves the best care, and I'm here to help you achieve that! 💎"
-                    ];
-
-                    const aiHtml = `
+                $.ajax({
+                    type: "GET",
+                    url: "http://127.0.0.1:5000/api/v1/chat",
+                    data: {
+                        query: msg,
+                    },
+                    dataType: "json",
+                    success: function (chat) {
+                        $('#typingIndicator').remove();
+                        const aiHtml = `
                         <div class="flex items-start space-x-2 sm:space-x-3 ${id}-ai">
                             <div class="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 flex-shrink-0">
                                 <i class="fas fa-robot text-dream-pink text-sm sm:text-base"></i>
                             </div>
                             <div class="chat-ai rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
-                                <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">${responses[Math.floor(Math.random() * responses.length)]}</p>
+                                <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">${chat.response}</p>
                                 <div class="flex items-center space-x-1 mt-2">
                                     <i class="fas fa-magic text-dream-pink text-xs"></i>
                                     <span class="text-xs text-gray-500">AI Assistant</span>
@@ -405,25 +405,36 @@
                         </div>
                     `;
 
-                    $('#chatArea').append(aiHtml);
-                    gsap.fromTo(`.${id}-ai`, { scale: 0.9, y: 20, opacity: 0, x: -30 }, { scale: 1, y: 0, opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.7)" });
+                        $('#chatArea').append(aiHtml);
+                        gsap.fromTo(`.${id}-ai`, { scale: 0.9, y: 20, opacity: 0, x: -30 }, { scale: 1, y: 0, opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.7)" });
 
-                    $('#chatArea').scrollTop($('#chatArea')[0].scrollHeight);
-                    isTyping = false;
-                }, 3000);
-            }
+                        $('#chatArea').scrollTop($('#chatArea')[0].scrollHeight);
+                    },
+                    error: function (xhr, status, error) {
+                        $('#typingIndicator').remove();
+                        const errorHtml = `
+                            <div class="flex items-start space-x-2 sm:space-x-3 ${id}-error">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 flex-shrink-0">
+                                    <i class="fas fa-exclamation-triangle text-dream-pink text-sm sm:text-base"></i>
+                                </div>
+                                <div class="chat-ai rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
+                                    <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">Oops! Something went wrong. Please try again later.</p>
+                                </div>
+                            </div>
+                        `;
 
-            // Activity updates
-            setInterval(() => {
-                const activities = ["124 online", "131 online", "118 online", "127 online", "142 online"];
-                gsap.to('.users-online', {
-                    opacity: 0, duration: 0.3,
-                    onComplete: function () {
-                        $('.users-online').text(activities[Math.floor(Math.random() * activities.length)]);
-                        gsap.to('.users-online', { opacity: 1, duration: 0.3 });
+                        $('#chatArea').append(errorHtml);
+                        gsap.fromTo(`.${id}-error`, { scale: 0.9, y: 20, opacity: 0, x: -30 }, { scale: 1, y: 0, opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.7)" });
+
+                        $('#chatArea').scrollTop($('#chatArea')[0].scrollHeight);
+                    },
+                    complete: function () {
+                        isTyping = false;
+                        $('#sendBtn').css({ pointerEvents: 'auto', opacity: 1 });
                     }
                 });
-            }, 6000);
+
+            }
         });
     </script>
 </body>
