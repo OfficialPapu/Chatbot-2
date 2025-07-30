@@ -395,7 +395,7 @@
                                 <i class="fas fa-robot text-dream-pink text-sm sm:text-base"></i>
                             </div>
                             <div class="chat-ai rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
-                                <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">${chat.response}</p>
+                                <p class="text-gray-700 text-xs sm:text-sm leading-relaxed" id="typewriter-${id}"></p>
                                 <div class="flex items-center space-x-1 mt-2">
                                     <i class="fas fa-magic text-dream-pink text-xs"></i>
                                     <span class="text-xs text-gray-500">AI Assistant</span>
@@ -408,6 +408,19 @@
                         $('#chatArea').append(aiHtml);
                         gsap.fromTo(`.${id}-ai`, { scale: 0.9, y: 20, opacity: 0, x: -30 }, { scale: 1, y: 0, opacity: 1, x: 0, duration: 0.6, ease: "back.out(1.7)" });
 
+                        function typeWriter(text, elementId, speed = 10) {
+                            let i = 0;
+                            function typing() {
+                                if (i < text.length) {
+                                    document.getElementById(elementId).innerHTML += text.charAt(i);
+                                    i++;
+                                    setTimeout(typing, speed);
+                                }
+                            }
+                            typing();
+                        }
+
+                        typeWriter(chat.response, `typewriter-${id}`);
                         $('#chatArea').scrollTop($('#chatArea')[0].scrollHeight);
                     },
                     error: function (xhr, status, error) {
