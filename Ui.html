@@ -189,7 +189,7 @@
                                 <i class="fas fa-robot text-dream-pink text-sm sm:text-base"></i>
                             </div>
                             <div class="chat-ai rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
-                                <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">Hello! I'm your Dream Skin
+                                <p class="text-gray-700 leading-relaxed">Hello! I'm your Dream Skin
                                     AI consultant. Ready to transform your skincare routine? Tell me about your skin
                                     concerns!</p>
                                 <div class="flex items-center space-x-1 mt-2">
@@ -204,7 +204,7 @@
                     <div class="p-3 sm:p-6 border-t border-gray-200 border-opacity-50 bg-white/30">
                         <div class="flex space-x-2 sm:space-x-3">
                             <input type="text" id="messageInput" placeholder="Ask about skincare, products, routines..."
-                                class="flex-1 glass-input rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-dream-blue focus:ring-opacity-50 transition-all text-sm sm:text-base"
+                                class="flex-1 glass-input rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-dream-blue focus:ring-opacity-50 transition-all"
                                 autocomplete="off">
                             <button id="sendBtn"
                                 class="brand-btn text-white rounded-2xl px-4 py-3 sm:px-6 sm:py-4 flex-shrink-0 transition-all duration-300">
@@ -218,7 +218,7 @@
             <!-- Sidebar -->
             <div class="space-y-4 sm:space-y-6">
                 <div class="glass rounded-3xl p-4 sm:p-6" id="quickActions">
-                    <h3 class="text-gray-800 font-semibold mb-3 sm:mb-4 flex items-center text-sm sm:text-base">
+                    <h3 class="text-gray-800 font-semibold mb-3 sm:mb-4 flex items-center">
                         <i class="fas fa-bolt mr-2 text-dream-blue text-sm sm:text-base"></i>
                         Quick Start
                     </h3>
@@ -227,8 +227,6 @@
                     <div class="space-y-2 sm:space-y-3" id="quickBtns">
                         <!-- Quick buttons will be injected by JS -->
                     </div>
-
-
 
                 </div>
 
@@ -338,7 +336,7 @@
                 const userHtml = `
                     <div class="flex items-start space-x-2 sm:space-x-3 justify-end ${id}-user">
                         <div class="chat-user rounded-2xl p-3 sm:p-4 min-w-[25%]">
-                            <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">${msg}</p>
+                            <p class="text-gray-700 leading-relaxed">${msg}</p>
                             <div class="flex items-center justify-end space-x-1 mt-2">
                                 <span class="text-xs text-gray-500">You</span>
                                 <i class="fas fa-check-double text-dream-blue text-xs ml-1"></i>
@@ -395,7 +393,7 @@
                                 <i class="fas fa-robot text-dream-pink text-sm sm:text-base"></i>
                             </div>
                             <div class="chat-ai rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
-                                <p class="text-gray-700 text-xs sm:text-sm leading-relaxed" id="typewriter-${id}"></p>
+                                <p class="text-gray-700 leading-relaxed" id="typewriter-${id}"></p>
                                 <div class="flex items-center space-x-1 mt-2">
                                     <i class="fas fa-magic text-dream-pink text-xs"></i>
                                     <span class="text-xs text-gray-500">AI Assistant</span>
@@ -431,7 +429,7 @@
                                     <i class="fas fa-exclamation-triangle text-dream-pink text-sm sm:text-base"></i>
                                 </div>
                                 <div class="chat-ai rounded-2xl p-3 sm:p-4 max-w-sm sm:max-w-md">
-                                    <p class="text-gray-700 text-xs sm:text-sm leading-relaxed">Oops! Something went wrong. Please try again later.</p>
+                                    <p class="text-gray-700 leading-relaxed">Oops! Something went wrong. Please try again later.</p>
                                 </div>
                             </div>
                         `;
